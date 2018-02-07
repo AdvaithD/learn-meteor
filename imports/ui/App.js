@@ -4,6 +4,7 @@ import Task from './Task.js'
 import { withTracker } from 'meteor/react-meteor-data'
 
 import { Tasks } from '../api/tasks.js'
+import AccountsUIWrapper from './AccountsUIWrapper.js';
 
 // App Component
 class App extends Component {
@@ -58,6 +59,8 @@ class App extends Component {
                 />
                 Hide Completed Tasks
           </label>
+
+          <AccountsUIWrapper />
           <form className="new-task" onSumbit={this.handleSubmit.bind(this)} >
             <input type="text"
                    ref="textInput"

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
+import { Meteor } from 'meteor/meteor';
 import Task from './Task.js'
 import { withTracker } from 'meteor/react-meteor-data'
 
@@ -24,6 +25,8 @@ class App extends Component {
     Tasks.insert({
       text,
       createdAt: new Date(),
+      owner: Meteor.userId(),
+      username: Meteor.user().username,
     })
     // Clear form
     ReactDOM.findDOMNode(this.refs.textInput).value = ''
@@ -61,11 +64,14 @@ class App extends Component {
           </label>
 
           <AccountsUIWrapper />
-          <form className="new-task" onSumbit={this.handleSubmit.bind(this)} >
-            <input type="text"
-                   ref="textInput"
-                   placeholder="Type to add new tasks"/>
-          </form>
+
+          { this.props.currentUser ?
+            <form className="new-task" onSumbit={this.handleSubmit.bind(this)} >
+              <input type="text"
+                     ref="textInput"
+                     placeholder="Type to add new tasks"/>
+            </form> : ''
+          }
         </header>
 
         <ul>
@@ -79,6 +85,7 @@ class App extends Component {
 export default withTracker(() => {
   return {
     tasks: Tasks.find({}, { sort: { createdAt: -1 } }).fetch(),
-    incompleteCount: Tasks.find({checked: { $ne: true} }).count()
+    incompleteCount: Tasks.find({checked: { $ne: true} }).count(),
+    currentUser: Meteor.user(),
   }
 })(App)
